@@ -20,7 +20,7 @@ Il est conçu pour garantir que les données supprimées ne peuvent pas être r�
 
 1. Clonez ce dépôt :
    ```bash
-   git clone https://github.com/votre-utilisateur/file-shredder.git
+   git clone https://github.com/B1J1M11/Shredder.git
    cd file-shredder
 
 2. Compiler lee dépôt :
