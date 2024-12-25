@@ -3,7 +3,7 @@
 ![image](https://github.com/user-attachments/assets/71b7ec5a-253a-47a3-be96-108926cbc6e5)
 
 
-Voici est un programme en assembleur qui permet d'écraser un fichier en le rendant illisible avant de supprimer son contenu. 
+`L'effaceur` est un programme en assembleur qui permet d'écraser un fichier en le rendant illisible avant de supprimer son contenu. 
 Il est conçu pour garantir que les données supprimées ne peuvent pas être récupérées à l'aide d'outils de récupération.
 
 ---
