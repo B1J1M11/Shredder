@@ -1,7 +1,7 @@
 # Shredder en Assembler x86_64
 
 Voici est un programme en assembleur qui permet d'écraser un fichier en le rendant illisible avant de supprimer son contenu. 
-Il est conçu pour garantir que les données ne peuvent pas être récupérées à l'aide d'outils de récupération.
+Il est conçu pour garantir que les données supprimées ne peuvent pas être récupérées à l'aide d'outils de récupération.
 
 ---
 
@@ -31,8 +31,11 @@ Il est conçu pour garantir que les données ne peuvent pas être récupérées 
 
 ## EXEMPLE
 
-![image](https://github.com/user-attachments/assets/95f737f4-cbd6-43ce-ad1d-31142b5c91ce)
+![image](https://github.com/user-attachments/assets/5243f4e5-3fa1-4d49-8b3c-b9b6f22414c6)
 
 
+## Axe d'amélioration à prévoir : 
 
-   
+- Ne fonctionne pas que les fichiers volumineux (sera pris en compte dans un avenir proche)
+- Les autres réponse que `y` ou `n` pour confirmer la suppression, ne sont pas pris en charge, donc possiblité d'erreurs.
+- Si une entrée dépasse la taille maximale prévue pour les variables user_path_input et user_answ_input, dépassements de mémoire tampon.
