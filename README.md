@@ -8,7 +8,7 @@ Il est conçu pour garantir que les données supprimées ne peuvent pas être r�
 
 ---
 
-## Prérequis
+## PREREQUIS
 
 - **Système d'exploitation :** Linux (x86_64).
 - **Assembleur :** NASM (Netwide Assembler).
@@ -16,7 +16,7 @@ Il est conçu pour garantir que les données supprimées ne peuvent pas être r�
 
 ---
 
-## Installation
+## INSTALLATION
 
 1. Clonez ce dépôt :
    ```bash
@@ -37,7 +37,7 @@ Il est conçu pour garantir que les données supprimées ne peuvent pas être r�
 ![image](https://github.com/user-attachments/assets/5243f4e5-3fa1-4d49-8b3c-b9b6f22414c6)
 
 
-## Axe d'amélioration à prévoir : 
+## AXE D'AMELIORATION :
 
 - Ne fonctionne pas que les fichiers volumineux (sera pris en compte dans un avenir proche)
 - Les autres réponse que `y` ou `n` pour confirmer la suppression, ne sont pas pris en charge, donc possiblité d'erreurs.
