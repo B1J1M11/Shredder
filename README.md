@@ -1,7 +1,5 @@
 # Shredder en Assembler x86_64
 
-## Description
-
 Voici est un programme en assembleur qui permet d'écraser un fichier en le rendant illisible avant de supprimer son contenu. 
 Il est conçu pour garantir que les données ne peuvent pas être récupérées à l'aide d'outils de récupération.
 
@@ -9,7 +7,7 @@ Il est conçu pour garantir que les données ne peuvent pas être récupérées 
 
 ## Prérequis
 
-- **Système d'exploitation :** Linux (64 bits uniquement).
+- **Système d'exploitation :** Linux (x86_64).
 - **Assembleur :** NASM (Netwide Assembler).
 - **Linker :** ld (GNU linker).
 
@@ -31,7 +29,7 @@ Il est conçu pour garantir que les données ne peuvent pas être récupérées 
    ```bash
    ./shredder
 
-##EXEMPLE
+## EXEMPLE
 
 ![image](https://github.com/user-attachments/assets/95f737f4-cbd6-43ce-ad1d-31142b5c91ce)
 
