@@ -39,5 +39,5 @@ Il est conçu pour assurer que les données supprimées sont irrécupérables, m
 
 ## AXE D'AMELIORATION :
 
-- Rajouter une barre de progression pour les fichiers qui volumineux.
+- Rajouter une barre de progression pour les fichiers qui sont volumineux.
 - Demander combien de fois l'utilisateur veux overwrite.
