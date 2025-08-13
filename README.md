@@ -39,6 +39,5 @@ Il est conçu pour assurer que les données supprimées sont irrécupérables, m
 
 ## AXE D'AMELIORATION :
 
-- Ne fonctionne pas que les fichiers volumineux (sera pris en compte dans un avenir proche)
-- Les autres réponse que `y` ou `n` pour confirmer la suppression, ne sont pas pris en charge, donc possiblité d'erreurs.
-- Si une entrée dépasse la taille maximale prévue pour les variables user_path_input et user_answ_input, dépassements de mémoire tampon.
+- Rajouter une barre de progression pour les fichiers qui volumineux.
+- Demander combien de fois l'utilisateur veux overwrite.
