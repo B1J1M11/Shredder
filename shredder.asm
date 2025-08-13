@@ -33,6 +33,8 @@ section .data
 section .bss
     user_path_input resb 100       ; Réserve un espace pour l'entrée utilisateur (fichier)
     user_answ_input resb 100       ; Réserve un espace pour l'entrée utilisateur (réponse)
+    statbuf        resb 256        ; Buffer pour struct stat
+    zero_buf       resb 65536      ; Buffer de zéros pour écriture par blocs
 
 section .text
     global _start
@@ -73,12 +75,16 @@ newline_replaced:
     mov byte [rbx], 0          ; Remplace '\n' ou caractère final par 0
     mov rax, 2                 ; Tente d'ouvrir le fichier
     mov rdi, user_path_input
-    mov rsi, 0                 ; O_RDONLY
+    mov rsi, 2                 ; O_RDWR
+    xor rdx, rdx               ;
     syscall
 
     ; Si l'ouverture a échoué
     cmp rax, 0
     jl invalid_path
+
+    ; Conserver le descripteur de fichier
+    mov r12, rax
 
     ; Si l'ouverture a réussi
     jmp valid_path
@@ -128,35 +134,19 @@ invalid_path:
     jmp end_program
 
 file_size:
-    mov rax, 2
-    lea rdi, [user_path_input]
-    mov rsi, 0                 ; O_RDONLY (lecture seule)
-    syscall
-    test rax, rax              ; Vérifie si l'ouverture a échoué
-    js failed_open             ; Si échec, failed_open
-
-    mov rbx, rax               ; Stocke le descripteur dans rbx
-
-    mov rax, 5                 ; Syscall pour 'fstat'
-    lea rdi, [rbx]
-    lea rsi, [rsp - 100]
+    ; fstat sur le descripteur déjà ouvert (r12)
+    mov rax, 5                 ; fstat
+    mov rdi, r12               ; fd
+    mov rsi, statbuf           ; struct stat
     syscall
 
-    cmp rax, 0
-    jl failed_fstat            ; Si échec, failed_fstat
+    test rax, rax
+    js failed_fstat
 
-    ; Récupére la taille du fichier depuis le stat
-    mov rax, [rsp - 100 + 8]
-    mov rbx, rax               ; Stocke la taille du fichier dans rbx
+    ; Récupère la taille du fichier
+    mov r13, qword [rel statbuf + 48]
 
-    ; Afficher la taille du fichier (pour debug)
-    mov rax, 1
-    mov rdi, 1
-    lea rsi, [rbx]
-    mov rdx, 8
-    syscall
-
-    ; Passer à la overwrite du fichier
+    ; shredd
     jmp overwrite_file 
 
 failed_open:
@@ -168,6 +158,9 @@ failed_open:
     jmp end_program
 
 failed_fstat:
+    mov rax, 3
+    mov rdi, r12
+    syscall
     mov rax, 1
     mov rdi, 1
     mov rsi, error_fstat
@@ -176,35 +169,39 @@ failed_fstat:
     jmp end_program
 
 overwrite_file:
-    mov rax, 2
-    lea rdi, [user_path_input]
-    mov rsi, 577               ; O_WRONLY | O_TRUNC
+    ; Repositionne le curseur au début
+    mov rax, 8                 ; lseek
+    mov rdi, r12               ; fd
+    xor rsi, rsi               ; offset = 0
+    xor rdx, rdx               ; SEEK_SET
     syscall
 
-    test rax, rax              ; Test si l'ouverture a échoué
-    js failed_open             ; failed_open si echec
+    ; Écrit des zéros par blocs jusqu'à couvrir toute la taille (r13)
+.overwrite_loop:
+    cmp r13, 0
+    jle close_then_delete
 
-    mov rbx, rax               ; Stocke le descripteur de fichier dans rbx
-    mov rcx, rbx               ; Taille du fichier à réécrire (taille du fichier est dans rbx)
-    xor rdx, rdx               ; Valeur zéro pour chaque octet
+    mov rdx, r13
+    cmp rdx, 65536
+    jbe .do_write
+    mov rdx, 65536
 
-fill_buffer:
-    mov [rsp - 100 + rcx], dl  ; Remplit le buffer avec des zéros
-    dec rcx                    ; Décrémente la taille restante
-    jns fill_buffer            ; Répéte jusqu'à ce que la taille soit 0
-
-    ; Écrire le buffer dans le fichier
-    mov rax, 1
-    mov rdi, rbx
-    lea rsi, [rsp - 100]
-    mov rdx, rbx
+.do_write:
+    mov rax, 1                 ; write
+    mov rdi, r12               ; fd
+    mov rsi, zero_buf          ; buffer de zéros
     syscall
-
-    ; Si l'écriture a échoué
     test rax, rax
-    js error_write             ; failed_write si échec
+    js error_write
+    cmp rax, 0
+    je error_write
+    sub r13, rax
+    jmp .overwrite_loop
 
-    ; Passe à la suppression du fichier
+close_then_delete:
+    mov rax, 3                 ; close
+    mov rdi, r12
+    syscall
     jmp delete_file 
 
 error_write:
@@ -245,6 +242,9 @@ invalid_delete:
 
 cancel_file:
     ; Annule la suppression
+    mov rax, 3                 ; close
+    mov rdi, r12
+    syscall
     mov rax, 1
     mov rdi, 1
     mov rsi, cancel_del
